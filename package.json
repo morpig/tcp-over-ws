@@ -1,0 +1,23 @@
+{
+  "name": "tcp-over-ws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morpig/tcp-over-ws.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/morpig/tcp-over-ws/issues"
+  },
+  "homepage": "https://github.com/morpig/tcp-over-ws#readme",
+  "dependencies": {
+    "bufferutil": "^4.0.7",
+    "ws": "^8.11.0"
+  }
+}
