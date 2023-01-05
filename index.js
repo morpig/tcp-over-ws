@@ -4,6 +4,7 @@ const { createServer } = require('net');
 const startClient = (wsAddress, target, port, cb) => {
     const tcpServer = createServer((socket) => {
         // new tcp connection
+        const startDate = new Date();
         const id = makeid(5);
 
         createWS();
@@ -44,7 +45,7 @@ const startClient = (wsAddress, target, port, cb) => {
                 // send pending buffer
                 while (buffer.length) {
                     console.log(`${new Date()}: ${id} sending pending buffers`);
-                    wsConnection.send(buffer.shift());
+                    ws.send(buffer.shift());
                 }
     
                 // forward ws -> tcp. don't forward if tcp conn is closed
@@ -57,7 +58,8 @@ const startClient = (wsAddress, target, port, cb) => {
 
             // on ws connection close
             ws.on('close', (code, reason) => {
-                console.log(`${new Date()}: ${id} WS close ${code} ${reason}`);
+                const endDate = new Date();
+                console.log(`${new Date()}: ${id} WS close ${code} ${reason} - ${endDate.getTime() - startDate.getTime()}s`);
                 wsConnection = null;
                 if (tcpSocket) {
                     // destroy tcp connection if still open
