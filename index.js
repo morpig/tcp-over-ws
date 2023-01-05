@@ -59,7 +59,7 @@ const startClient = (wsAddress, target, port, cb) => {
             // on ws connection close
             ws.on('close', (code, reason) => {
                 const endDate = new Date();
-                console.log(`${new Date()}: ${id} WS close ${code} ${reason} - ${endDate.getTime() - startDate.getTime()}s`);
+                console.log(`${new Date()}: ${id} WS close ${code} ${reason} - ${(endDate.getTime() - startDate.getTime())/1000}s`);
                 wsConnection = null;
                 if (tcpSocket) {
                     // destroy tcp connection if still open
