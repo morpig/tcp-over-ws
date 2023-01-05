@@ -36,13 +36,13 @@ const startClient = (wsAddress, target, port, cb) => {
                 console.log(`${new Date()}: ${id} WS open`);
                 wsConnection = ws;
     
-                // sending pending buffer
+                // send pending buffer
                 while (buffer.length) {
                     console.log(`${new Date()}: ${id} sending pending buffers`);
                     wsConnection.send(buffer.shift());
                 }
     
-                // forward ws -> tcp. don't forward if tcp is closed
+                // forward ws -> tcp. don't forward if tcp conn is closed
                 ws.on('message', (msg) => {
                     if (tcpSocket) {
                         tcpSocket.write(msg);
