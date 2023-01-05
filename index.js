@@ -24,6 +24,11 @@ const startClient = (wsAddress, target, port, cb) => {
             tcpSocket = null;
         })
 
+        // tcp connection on error (sudden abrupt)
+        tcpSocket.on('error', (error) => {
+            console.log(error);
+        })
+
         // websocket function
         function createWS() {
             const ws = new WebSocket(wsAddress, {
