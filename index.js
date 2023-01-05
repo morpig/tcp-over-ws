@@ -3,12 +3,15 @@ const { createServer } = require('net');
 
 const startClient = (wsAddress, target, port, cb) => {
     const tcpServer = createServer((socket) => {
+        // new tcp connection
         const id = makeid(5);
 
         createWS();
         let tcpSocket = socket, wsConnection, buffer = [];
 
+        // on tcp receive
         tcpSocket.on('data', (data) => {
+            // if ws connection != open, keep in buffer. if open, send directly.
             if (!wsConnection) {
                 buffer.push(data);
             } else {
@@ -16,25 +19,30 @@ const startClient = (wsAddress, target, port, cb) => {
             }
         });
 
+        // tcp connection close event
         tcpSocket.on('close', () => {
             tcpSocket = null;
         })
 
+        // websocket function
         function createWS() {
             const ws = new WebSocket(wsAddress, {
                 perMessageDeflate: false,
                 skipUTF8Validation: true
             });
 
+            // on ws connection open
             ws.on('open', () => {
                 console.log(`${new Date()}: ${id} WS open`);
                 wsConnection = ws;
     
+                // sending pending buffer
                 while (buffer.length) {
                     console.log(`${new Date()}: ${id} sending pending buffers`);
                     wsConnection.send(buffer.shift());
                 }
     
+                // forward ws -> tcp. don't forward if tcp is closed
                 ws.on('message', (msg) => {
                     if (tcpSocket) {
                         tcpSocket.write(msg);
@@ -42,10 +50,12 @@ const startClient = (wsAddress, target, port, cb) => {
                 });
             });
 
+            // on ws connection close
             ws.on('close', (code, reason) => {
                 console.log(`${new Date()}: ${id} WS close ${code} ${reason}`);
                 wsConnection = null;
                 if (tcpSocket) {
+                    // destroy tcp connection if still open
                     tcpSocket.destroy();
                 }
             })
