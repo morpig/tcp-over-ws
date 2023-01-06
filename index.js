@@ -23,6 +23,11 @@ const startClient = (wsAddress, target, port, cb) => {
         // tcp connection close event
         tcpSocket.on('close', () => {
             tcpSocket = null;
+            // bugfix: WS connection still active when tcp socket closed.
+            if (wsConnection) {
+                console.log(`${new Date()}: tcp conn close, ws still active, closing WS.`);
+                wsConnection.close();
+            }
         })
 
         // tcp connection on error (sudden abrupt)
